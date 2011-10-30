@@ -2,25 +2,19 @@ require('zappa') ->
   @io.set( "log level", 1 )
 
   dbname = 'test'
-  #mongoose.noSchema('test',db)
-  mongoose = require 'mongoose'
-  Schema = mongoose.Schema
-
-  ObjectId = mongoose.ObjectId
-
   mongolian = require 'mongolian'
   server = new mongolian()
   db = server.db 'feed'
   article = db.collection 'article'
 
+  cp = require 'child_process'
   request = require 'request'
   readability = require 'readability'
   # express setting
   @use "static",@app.router
     , @express.cookieParser()
     , @express.session
-      secret: "wowowowo"
-      store:require('connect-redis')(@express)()
+      secret: "mykey"
       cookie: { maxAge: 86400 * 1000 }
     , @express.methodOverride()
     , @express.bodyParser()
@@ -28,23 +22,11 @@ require('zappa') ->
   @set 'views', __dirname + '/views'
   @enable 'serve jquery'
 
-  ### CSS ###
-  @ccss '/style.css':
-    h1:
-      padding:"1px"
-      a:
-        color:"Grey";
-    'h3.selected':
-      "background-color":"yellow"
-    'ul#side-menu':
-      'list-syle-type':'none'
-
   @shared "/shared.js":->
     r = window ? global
     r.d = (e)-> console.log e
 
   @client '/bootstrap.js': ->
-
     window.ck = CoffeeKup
     window.Article = ->
 
@@ -212,7 +194,6 @@ require('zappa') ->
         article.save i
 
 
-  cp = require 'child_process'
   global.scraper_lock = false
   @on get_unread: ->
     article.find(unread:true).toArray (e,items)=>

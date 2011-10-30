@@ -1,0 +1,50 @@
+node-rss-reader
+
+LDRっぽいRSSリーダーです
+zappaとKnockout.jsとwebsocketの練習がてら作ったものです。
+
+=== 依存 ====
+- mongodb
+- nkf
+- libxml2
+- node(0,4系)
+- python(2.7系)
+- WebSocket 対応ブラウザ
+
+- npm
+zappa coffee-script readability mongolian request
+他にもあった気がする
+
+ - python
+pyquery , feedparser ,pykf, pymongo 
+これも多すぎて忘れた。feedparserで取得した辞書オブジェクトをそのままpymongoで投げてます。
+スキーマさえあってればPythonである必要はないです。
+
+- フィードのソース
+export.xml は id:miz404(mizchi)の opml です。
+自分のものと差し替えたい場合は livedoor Readerにログインした状態で、
+http://reader.livedoor.com/export/opml からダウンロードしてください。
+Googleのopmlと互換があるかは調べてません。
+
+crawl.coffee は node でスクレイピングしようとした残滓です。
+並列アクセスで、過負荷で自分が落ちます。
+
+
+条件さえ満たしてれば
+
+> python crawler.py
+> coffee app.coffee
+> open localhost:3000
+
+で起動するはずです。
+
+cron に crawler.py を登録するとスクレイピングします
+
+
+** 使い方
+
+j 次の記事
+k 前の記事
+s 次のソース
+a 前のソース
+r 未読をリセットし、バックグラウンドでスクレイパーを走らせます

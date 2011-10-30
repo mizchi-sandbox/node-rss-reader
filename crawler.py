@@ -8,7 +8,6 @@ import feedparser
 import pykf
 from pymongo import Connection
 from pyquery import PyQuery as pq
-import MeCab
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -17,11 +16,7 @@ sys.setdefaultencoding('utf-8')
 connection = Connection()
 feed = connection.feed
 article = feed.article
-# article.drop()
-# entry.ensure_index("link",1)
-# entry.ensure_index("words",1)
 
-mecab = MeCab.Tagger("-Ochasen")
 def get_source_by_opml(fname):
     root = pq(filename=fname)
     outline = root("outline")
@@ -50,26 +45,11 @@ def unify(text):
     return text
 
 
-def get_words(node):
-    if not node.next:
-        return [node.surface]
-    return [node.surface] + get_words(node.next)
-
-def searchable(item,name):
-    try:
-        words = []
-        node = mecab.parseToNode( item[name].encode("utf-8") )
-        words = get_words( node )[1:-1]
-        item["#"+name] = words
-    except :
-        pass
-
 def save_entry(src):
     f = feedparser.parse(src["xmlUrl"])
     for e in f['entries']:
         item = article.find_one({"link":e.link.encode('utf8')})
         if not item:
-            searchable(e,'title')
             time_keywords = ["updated_parsed",'published_parsed',"created_parsed"]
 
             for k,v in e.iteritems():
