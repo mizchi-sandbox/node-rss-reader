@@ -107,7 +107,7 @@ require('zappa') ->
       view.sources []
       view.sources.push i for i in @data
       $("html,body").animate({scrollTop: 0 },0)
-      view.source_cursor 0
+      # view.source_cursor 0
 
     ((bindings)->
       for k,v of bindings
